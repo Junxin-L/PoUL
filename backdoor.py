@@ -15,7 +15,7 @@ from Param import *
 
 def load_data(data_dir):
     # image_datasets = {y: datasets.ImageFolder(os.path.join(data_dir, y)) for y in ['train', 'test']}
-    image_datasets = {y: datasets.ImageFolder(os.path.join(data_dir, y)) for y in ['train']}
+    image_datasets = {y: datasets.ImageFolder(os.path.join(data_dir, y)) for y in ['train', 'test']}
     return image_datasets
 
 def poision_ratio(image_datasets, poison_mode, poison_rate):
@@ -77,12 +77,14 @@ def save_visual_fig(num, image_dataset, index, posison_label=False, save_dir=Non
     
     return path_list
 
+def clienthash(num):
+    return t_lst[num]
+
 def main():
     for i, client in zip(range(len(clients)), clients):
         dir = f'.\\Clients\\{dataset}\\{client}'
         np.random.seed(i)
-        trigger = np.random.randint(0,2,20)
-        # np和list的乘法竟然不太一样……
+        trigger = clienthash(i)
         trigger = list(trigger) * 100
         image_datasets = load_data(dir)
         
@@ -97,16 +99,16 @@ def main():
         visual = save_visual_fig(i, image_datasets['train'], poison_train_index, \
                                         posison_label=True, save_dir=osp.join(dir, 'visual_poison_train'))
         # For Test 
-        # poison_test_index, clean_test_index = poision_ratio(image_datasets, 'test', 1)
-        # clean_test_path_list = save_fig(i, image_datasets['test'], poison_test_index, \
-        #                             posison_label=False, save_dir=osp.join(dir, 'clean_test'))
-        # poison_test_path_list = save_fig(i, image_datasets['test'], poison_test_index, \
-        #                             posison_label=True, save_dir=osp.join(dir, 'poison_test'))
+        poison_test_index, clean_test_index = poision_ratio(image_datasets, 'test', 1)
+        clean_test_path_list = save_fig(i, image_datasets['test'], poison_test_index, \
+                                     posison_label=False, save_dir=osp.join(dir, 'clean_test'))
+        poison_test_path_list = save_fig(i, image_datasets['test'], poison_test_index, \
+                                     posison_label=True, save_dir=osp.join(dir, 'poison_test'))
 
         # Backdoor data
         backdoor_data(trigger, poison_train_clean_label_path_list)
         backdoor_data(trigger, poison_train_poison_label_path_list)
-        #backdoor_data(trigger, poison_test_path_list)
+        backdoor_data(trigger, poison_test_path_list)
         visualize_bd(trigger, visual)
         
 
