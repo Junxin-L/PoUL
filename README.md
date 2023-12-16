@@ -25,7 +25,7 @@ Download and extract the PoUL package to your desired directory.
 The PoUL framework consists of several Python modules:
 
 - `Model.py`: Defines the ML model structure.
-- `allocate.py`: Manages resource allocation.
+- `allocate.py`: Manages client data allocation.
 - `backdoor.py`: Implements the backdoor trigger mechanism.
 - `backdoor_utils.py`: Provides utility functions for the backdoor process.
 - `class_name_convert.py`: Converts class names for compatibility.
