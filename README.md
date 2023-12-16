@@ -39,4 +39,3 @@ To start using PoUL, run the `train.py` script:
 
 ```bash
 python train.py
-、、、
